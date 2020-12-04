@@ -7,7 +7,7 @@ public class Frame {
     private int tries = 0;
     private int firstRoll;
     private int secondRoll;
-    private Frame next = new NoFrame();
+    private Frame next;
 
     void roll(int pins) throws NoMoreRollsException, IllegalRollException {
         if (score() + pins > TOTAL_NUMBER_OF_PINS) {
@@ -35,10 +35,21 @@ public class Frame {
 
     int score() {
         var frameScore = firstRoll + secondRoll;
-        if (isSpare()) {
+        if (isStrike() && hasNext()) {
+            return frameScore + next.getFirstRoll() + next.getSecondRoll();
+        }
+        if (isSpare() && hasNext()) {
             return frameScore + next.getFirstRoll();
         }
         return frameScore;
+    }
+
+    private boolean isStrike() {
+        return firstRoll == 10;
+    }
+
+    private boolean hasNext() {
+        return next != null;
     }
 
     private boolean isSpare() {
