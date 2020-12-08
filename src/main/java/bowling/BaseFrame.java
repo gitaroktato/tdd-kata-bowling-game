@@ -35,16 +35,23 @@ abstract class BaseFrame implements Frame {
         tries++;
     }
 
-    boolean isStrike() {
+    @Override
+    public boolean isStrike() {
         return firstRoll == 10;
     }
 
-    boolean isSpare() {
+    @Override
+    public boolean isSpare() {
         return firstRoll + secondRoll == 10;
     }
 
     @Override
     public boolean hasMoreRolls() {
         return !isStrike() && tries < MAXIMUM_TRIES_IN_A_FRAME;
+    }
+
+    @Override
+    public boolean hasNext() {
+        return false;
     }
 }

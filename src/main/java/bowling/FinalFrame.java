@@ -28,11 +28,24 @@ public class FinalFrame extends BaseFrame implements Frame  {
 
     @Override
     public int score() {
-        return getFirstRoll() + getSecondRoll() + thirdRoll;
+        if (isStrike()) {
+            return getFirstRoll() + thirdRoll * 2;
+        } else {
+            return getFirstRoll() + getSecondRoll() + thirdRoll;
+        }
     }
 
     @Override
     public boolean hasMoreRolls() {
         return super.hasMoreRolls() || isThirdRollAllowed();
+    }
+
+    @Override
+    public int getNextRoll() {
+        if (isStrike()) {
+            return thirdRoll;
+        } else {
+            return getSecondRoll();
+        }
     }
 }

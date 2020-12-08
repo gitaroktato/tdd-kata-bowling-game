@@ -98,7 +98,7 @@ public class GameTest {
 
 
     @Test
-    public void test_withPerfectGame() throws Exception {
+    public void test_withMultipleStrikes() throws Exception {
         var game = new Game();
         game.roll(10); // strike : 30
         game.roll(10); // strike : 20
@@ -106,10 +106,16 @@ public class GameTest {
         assertEquals(60, game.score());
     }
 
-    // TODO validation
-    // More than 10 pins?
-    // More than 10 frames?
-
-    // TODO integrity??
-    // Two rolls with the sum of 10 in each frame.
+    @Test
+    public void test_withPerfectGame() throws Exception {
+        var game = new Game();
+        IntStream.rangeClosed(1, 11).forEach(i -> {
+            try {
+                game.roll(10);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+        assertEquals(300, game.score());
+    }
 }
