@@ -1,7 +1,6 @@
 package bowling;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class Game {
@@ -14,7 +13,7 @@ public class Game {
     public Game() {
         IntermediateFrame current = new IntermediateFrame();
         frames.add(current);
-        for (int i = 2; i <= 9; i++) {
+        for (int i = 2; i <= FINAL_FRAME_INDEX; i++) {
             var next = new IntermediateFrame();
             current.setNext(next);
             current = next;
@@ -28,7 +27,8 @@ public class Game {
 
     public void roll(int pins) throws IllegalRollException, NoMoreRollsException {
         frames.get(currentFrame).roll(pins);
-        if (!frames.get(currentFrame).hasMoreRolls() && canProceedWithNextFrame()) {
+        if (!frames.get(currentFrame).hasMoreRolls()
+                && canProceedWithNextFrame()) {
             currentFrame++;
         }
     }

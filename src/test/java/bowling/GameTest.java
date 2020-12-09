@@ -1,6 +1,5 @@
 package bowling;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.stream.IntStream;
@@ -9,6 +8,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class GameTest {
+
+    private void makeATestRoll(Game game, int pins) {
+        try {
+            game.roll(pins);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     @Test
     public void test_withOnlyOneRollWhichDoesNotHit() throws Exception {
@@ -31,13 +38,7 @@ public class GameTest {
     public void test_withFullGame() {
         var game = new Game();
         IntStream.range(0, 20).forEach(
-                i -> {
-                    try {
-                        game.roll(1);
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
-                    }
-                });
+                i -> makeATestRoll(game, 1));
         var score = game.score();
         assertEquals(20, score);
     }
@@ -62,28 +63,18 @@ public class GameTest {
 
 
     @Test
-    public void test_withTenFrames() throws Exception {
+    public void test_withTenFrames() {
         var game = new Game();
-        IntStream.rangeClosed(1, 20).forEach(i -> {
-            try {
-                game.roll(1);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        });
+        IntStream.rangeClosed(1, 20).forEach(i ->
+            makeATestRoll(game, 1));
         assertEquals(20, game.score());
     }
 
     @Test
-    public void test_withMoreThanTenFrames() throws Exception {
+    public void test_withMoreThanTenFrames(){
         var game = new Game();
-        IntStream.rangeClosed(1, 20).forEach(i -> {
-            try {
-                game.roll(1);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        });
+        IntStream.rangeClosed(1, 20).forEach(i ->
+            makeATestRoll(game, 1));
         assertThrows(NoMoreRollsException.class, () -> game.roll(1));
     }
 
@@ -109,12 +100,8 @@ public class GameTest {
     @Test
     public void test_withPerfectGame() throws Exception {
         var game = new Game();
-        IntStream.rangeClosed(1, 11).forEach(i -> {
-            try {
-                game.roll(10);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
+        IntStream.rangeClosed(1, 12).forEach(i -> {
+            makeATestRoll(game, 10);
         });
         assertEquals(300, game.score());
     }

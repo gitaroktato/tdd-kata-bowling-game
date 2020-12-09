@@ -7,19 +7,27 @@ public class FinalFrame extends BaseFrame implements Frame  {
 
     @Override
     public void roll(int pins) throws NoMoreRollsException, IllegalRollException {
-        if (pins > TOTAL_NUMBER_OF_PINS) {
-            throw new IllegalRollException();
-        }
-        if (isThirdRollMade) {
+        verifyNumberOfPins(pins);
+        if (alreadyHadTwoTriesWithoutThirdRollAllowed() || isThirdRollMade) {
             throw new NoMoreRollsException();
         }
+        if (!isThirdRollAllowed()
+                && getFirstRoll() + getSecondRoll() + pins > TOTAL_NUMBER_OF_PINS) {
+            throw new IllegalRollException();
+        }
 
-        if (isThirdRollAllowed()) {
+        if (getNumberOfTries() == 0) {
+            setFirstRoll(pins);
+        } else if (getNumberOfTries() == 1) {
+            setSecondRoll(pins);
+        } else {
             this.thirdRoll = pins;
             isThirdRollMade = true;
-        } else {
-            super.roll(pins);
         }
+    }
+
+    private boolean alreadyHadTwoTriesWithoutThirdRollAllowed() {
+        return getNumberOfTries() == 2 && !isThirdRollAllowed();
     }
 
     private boolean isThirdRollAllowed() {
@@ -28,24 +36,21 @@ public class FinalFrame extends BaseFrame implements Frame  {
 
     @Override
     public int score() {
-        if (isStrike()) {
-            return getFirstRoll() + thirdRoll * 2;
-        } else {
-            return getFirstRoll() + getSecondRoll() + thirdRoll;
-        }
+        return getFirstRoll() + getSecondRoll() + thirdRoll;
     }
 
     @Override
     public boolean hasMoreRolls() {
-        return super.hasMoreRolls() || isThirdRollAllowed();
+        return isThirdRollAllowed() || getNumberOfTries() < 2;
     }
 
     @Override
-    public int getNextRoll() {
-        if (isStrike()) {
-            return thirdRoll;
-        } else {
-            return getSecondRoll();
-        }
+    public boolean hasNext() {
+        return false;
+    }
+
+    @Override
+    public int getSecondRollForBonus() {
+        return getSecondRoll();
     }
 }

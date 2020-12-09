@@ -3,7 +3,6 @@ package bowling;
 abstract class BaseFrame implements Frame {
 
     static final int TOTAL_NUMBER_OF_PINS = 10;
-    private static final int MAXIMUM_TRIES_IN_A_FRAME = 2;
     private int tries = 0;
     private int firstRoll;
     private int secondRoll;
@@ -18,40 +17,32 @@ abstract class BaseFrame implements Frame {
         return secondRoll;
     }
 
-    @Override
-    public void roll(int pins) throws NoMoreRollsException, IllegalRollException {
-        if (firstRoll + secondRoll + pins > TOTAL_NUMBER_OF_PINS) {
-            throw new IllegalRollException();
-        }
-        if (tries >= MAXIMUM_TRIES_IN_A_FRAME) {
-            throw new NoMoreRollsException();
-        }
+    final int getNumberOfTries() {
+        return tries;
+    }
 
-        if (tries == 0) {
-            firstRoll = pins;
-        } else if (tries == 1) {
-            secondRoll = pins;
-        }
+    final void setFirstRoll(int roll) {
+        firstRoll = roll;
         tries++;
     }
 
-    @Override
-    public boolean isStrike() {
+    final void setSecondRoll(int roll) {
+        secondRoll = roll;
+        tries++;
+    }
+
+    final boolean isStrike() {
         return firstRoll == 10;
     }
 
-    @Override
-    public boolean isSpare() {
+    boolean isSpare() {
         return firstRoll + secondRoll == 10;
     }
 
-    @Override
-    public boolean hasMoreRolls() {
-        return !isStrike() && tries < MAXIMUM_TRIES_IN_A_FRAME;
+    final void verifyNumberOfPins(int pins) throws IllegalRollException {
+        if (pins > TOTAL_NUMBER_OF_PINS) {
+            throw new IllegalRollException();
+        }
     }
 
-    @Override
-    public boolean hasNext() {
-        return false;
-    }
 }

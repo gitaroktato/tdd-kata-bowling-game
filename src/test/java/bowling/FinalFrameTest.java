@@ -65,7 +65,8 @@ public class FinalFrameTest {
     public void testRoll_withStrike() throws Exception  {
         frame.roll(10);
         frame.roll(2);
-        assertEquals(14, frame.score());
+        frame.roll(3);
+        assertEquals(15, frame.score());
     }
 
     @Test
@@ -98,6 +99,7 @@ public class FinalFrameTest {
 
     @Test
     public void testHasMoreRolls_withStrike() throws Exception {
+        frame.roll(10);
         frame.roll(10);
         assertTrue(frame.hasMoreRolls());
 
