@@ -1,4 +1,4 @@
-#Bowling TDD Kata Story
+# Bowling TDD Kata Story
 **To read**:
 Original description of the exercise:
 [https://kata-log.rocks/bowling-game-kata]
