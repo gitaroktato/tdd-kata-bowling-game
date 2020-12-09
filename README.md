@@ -1,5 +1,5 @@
 # Bowling TDD Kata Story
-**You can view the entire story [over here]**(https://codingstories.io/story/https:%2F%2Fgitlab.com%2Fgitaroktato%2Ftdd-kata-bowling-game)
+**You can view the entire story [over here](https://codingstories.io/story/https:%2F%2Fgitlab.com%2Fgitaroktato%2Ftdd-kata-bowling-game)**
 
 **To read**:
 Original description of the exercise:
