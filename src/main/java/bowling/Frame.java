@@ -1,6 +1,6 @@
 package bowling;
 
-public interface Frame {
+interface Frame {
     void roll(int pins) throws NoMoreRollsException, IllegalRollException;
     int score();
     boolean hasMoreRolls();
