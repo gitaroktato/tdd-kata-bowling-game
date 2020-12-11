@@ -41,4 +41,37 @@ public class FrameTest {
         frame.roll(10);
         assertThrows(IllegalRollException.class, () -> frame.roll(1));
     }
+
+    @Test
+    public void testRoll_withSpare() throws Exception  {
+        var frame = new Frame();
+        var nextFrame = new Frame();
+        frame.setNext(nextFrame);
+        frame.roll(3);
+        frame.roll(7);
+        nextFrame.roll(2);
+        assertEquals(12, frame.score());
+    }
+
+    @Test
+    public void testRoll_withStrike() throws Exception  {
+        var frame = new Frame();
+        var nextFrame = new Frame();
+        frame.setNext(nextFrame);
+        frame.roll(10);
+        nextFrame.roll(2);
+        nextFrame.roll(5);
+        assertEquals(17, frame.score());
+    }
+
+    @Test
+    public void testRoll_withAndWithoutNextFrame() throws Exception  {
+        var frame = new Frame();
+        var nextFrame = new Frame();
+        frame.setNext(nextFrame);
+        frame.roll(10);
+        assertEquals(10, frame.score());
+    }
+
+    // without next frame score?
 }
