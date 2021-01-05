@@ -3,26 +3,36 @@ package bowling;
 public class FinalFrame extends BaseFrame implements Frame  {
 
     private int thirdRoll;
+    private boolean isThirdRollMade = false;
 
     @Override
     public void roll(int pins) throws NoMoreRollsException, IllegalRollException {
         if (pins > TOTAL_NUMBER_OF_PINS) {
             throw new IllegalRollException();
         }
+        if (isThirdRollMade) {
+            throw new NoMoreRollsException();
+        }
 
         if (isThirdRollAllowed()) {
             this.thirdRoll = pins;
+            isThirdRollMade = true;
         } else {
             super.roll(pins);
         }
     }
 
     private boolean isThirdRollAllowed() {
-        return (isSpare() || isStrike());
+        return !isThirdRollMade && (isSpare() || isStrike());
     }
 
     @Override
     public int score() {
         return getFirstRoll() + getSecondRoll() + thirdRoll;
+    }
+
+    @Override
+    public boolean hasMoreRolls() {
+        return super.hasMoreRolls() || isThirdRollAllowed();
     }
 }

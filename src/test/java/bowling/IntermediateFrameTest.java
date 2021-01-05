@@ -3,8 +3,7 @@ package bowling;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class IntermediateFrameTest {
 
@@ -72,6 +71,31 @@ public class IntermediateFrameTest {
         frame.setNext(nextFrame);
         frame.roll(10);
         assertEquals(10, frame.score());
+    }
+
+    @Test
+    public void testHasMoreRolls_withoutAny() throws Exception {
+        assertTrue(frame.hasMoreRolls());
+    }
+
+    @Test
+    public void testHasMoreRolls_withoutStrikeOrSpare() throws Exception {
+        frame.roll(3);
+        frame.roll(4);
+        assertFalse(frame.hasMoreRolls());
+    }
+
+    @Test
+    public void testHasMoreRolls_withSpare() throws Exception {
+        frame.roll(3);
+        frame.roll(7);
+        assertFalse(frame.hasMoreRolls());
+    }
+
+    @Test
+    public void testHasMoreRolls_withStrike() throws Exception {
+        frame.roll(10);
+        assertFalse(frame.hasMoreRolls());
     }
 
     // TODO NoFrame?

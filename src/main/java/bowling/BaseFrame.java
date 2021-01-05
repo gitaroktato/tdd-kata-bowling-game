@@ -8,11 +8,13 @@ abstract class BaseFrame implements Frame {
     private int firstRoll;
     private int secondRoll;
 
-    int getFirstRoll() {
+    @Override
+    public int getFirstRoll() {
         return firstRoll;
     }
 
-    int getSecondRoll() {
+    @Override
+    public int getSecondRoll() {
         return secondRoll;
     }
 
@@ -39,5 +41,10 @@ abstract class BaseFrame implements Frame {
 
     boolean isSpare() {
         return firstRoll + secondRoll == 10;
+    }
+
+    @Override
+    public boolean hasMoreRolls() {
+        return !isStrike() && tries < MAXIMUM_TRIES_IN_A_FRAME;
     }
 }
