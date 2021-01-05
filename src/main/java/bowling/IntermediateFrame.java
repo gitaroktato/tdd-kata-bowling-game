@@ -2,7 +2,7 @@ package bowling;
 
 public class IntermediateFrame extends BaseFrame implements Frame {
 
-    private IntermediateFrame next;
+    private Frame next;
 
     @Override
     public int score() {
@@ -20,7 +20,7 @@ public class IntermediateFrame extends BaseFrame implements Frame {
         return next != null;
     }
 
-    public void setNext(IntermediateFrame next) {
+    public void setNext(Frame next) {
         this.next = next;
     }
 }
