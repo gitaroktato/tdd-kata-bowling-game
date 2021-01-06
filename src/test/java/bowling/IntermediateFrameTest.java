@@ -97,6 +97,4 @@ public class IntermediateFrameTest {
         frame.roll(10);
         assertFalse(frame.hasMoreRolls());
     }
-
-    // TODO NoFrame?
 }

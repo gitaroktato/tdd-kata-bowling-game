@@ -3,7 +3,7 @@ package bowling;
 public class IntermediateFrame extends BaseFrame implements Frame {
 
     private static final int MAXIMUM_TRIES_IN_A_FRAME = 2;
-    private Frame next;
+    private Frame next = new NoFrame();
 
     @Override
     public void roll(int pins) throws NoMoreRollsException, IllegalRollException {
@@ -26,9 +26,9 @@ public class IntermediateFrame extends BaseFrame implements Frame {
     @Override
     public int score() {
         var frameScore = getFirstRoll() + getSecondRoll();
-        if (isStrike() && hasNext()) {
+        if (isStrike()) {
             return frameScore + next.getFirstRoll() + next.getSecondRollForBonus();
-        } else if (isSpare() && hasNext()) {
+        } else if (isSpare()) {
             return frameScore + next.getFirstRoll();
         } else {
             return frameScore;
@@ -37,16 +37,11 @@ public class IntermediateFrame extends BaseFrame implements Frame {
 
     @Override
     public int getSecondRollForBonus() {
-        if (isStrike() && hasNext()) {
+        if (isStrike()) {
             return next.getFirstRoll();
         } else {
             return getSecondRoll();
         }
-    }
-
-    @Override
-    public boolean hasNext() {
-        return next != null;
     }
 
     @Override
