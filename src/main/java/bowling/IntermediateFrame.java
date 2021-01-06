@@ -49,6 +49,7 @@ public class IntermediateFrame extends BaseFrame implements Frame {
         return next != null;
     }
 
+    @Override
     public void setNext(Frame next) {
         this.next = next;
     }

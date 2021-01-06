@@ -50,6 +50,11 @@ public class FinalFrame extends BaseFrame implements Frame  {
     }
 
     @Override
+    public void setNext(Frame frame) {
+        throw new UnsupportedOperationException("FinalFrame can't have next frame");
+    }
+
+    @Override
     public int getSecondRollForBonus() {
         return getSecondRoll();
     }

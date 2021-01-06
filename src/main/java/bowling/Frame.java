@@ -7,5 +7,6 @@ interface Frame {
     int getFirstRoll();
     int getSecondRoll();
     boolean hasNext();
+    void setNext(Frame frame);
     int getSecondRollForBonus();
 }
