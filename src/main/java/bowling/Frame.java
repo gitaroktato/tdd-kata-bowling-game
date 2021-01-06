@@ -6,4 +6,6 @@ public interface Frame {
     boolean hasMoreRolls();
     int getFirstRoll();
     int getSecondRoll();
+    boolean hasNext();
+    int getSecondRollForBonus();
 }
