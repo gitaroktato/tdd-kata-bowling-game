@@ -81,4 +81,12 @@ public class TenthFrameTest {
         frame.roll(10);
         assertThrows(IllegalRollException.class, () -> frame.roll(12));
     }
+
+    @Test
+    public void testRoll_withThreeStrikes() throws Exception  {
+        frame.roll(10);
+        frame.roll(10);
+        frame.roll(10);
+        assertEquals(30, frame.score());
+    }
 }

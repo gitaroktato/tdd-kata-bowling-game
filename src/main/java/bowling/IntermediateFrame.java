@@ -2,7 +2,7 @@ package bowling;
 
 public class IntermediateFrame extends BaseFrame {
 
-    public static final int MAXIMUM_TRIES = 2;
+    private static final int MAXIMUM_TRIES = 2;
     private int tries = 0;
     private Frame next;
 

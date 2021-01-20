@@ -2,7 +2,7 @@ package bowling;
 
 public class TenthFrame extends BaseFrame {
 
-    public static final int MAXIMUM_TRIES = 3;
+    private static final int MAXIMUM_TRIES = 3;
     private int tries = 0;
     private int thirdRoll;
 
