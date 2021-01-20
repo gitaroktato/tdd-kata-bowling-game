@@ -1,15 +1,24 @@
 package bowling;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class FrameTest {
+public class IntermediateFrameTest {
+
+    private IntermediateFrame frame;
+
+    @BeforeEach
+    public void setUp () {
+        this.frame = new IntermediateFrame();
+    }
+
 
     @Test
     public void testRoll_withTwoTrials() throws Exception {
-        var frame = new Frame();
+        
         frame.roll(3);
         frame.roll(7);
         assertEquals(3, frame.getFirstRoll());
@@ -18,7 +27,7 @@ public class FrameTest {
 
     @Test
     public void testRoll_withMoreTrials() throws Exception {
-        var frame = new Frame();
+        
         frame.roll(0);
         frame.roll(0);
         assertThrows(NoMoreRollsException.class,
@@ -27,7 +36,7 @@ public class FrameTest {
 
     @Test
     public void testRoll_withTenPins() throws Exception {
-        var frame = new Frame();
+        
         frame.roll(10);
         frame.roll(0);
         assertEquals(10, frame.score());
@@ -37,15 +46,15 @@ public class FrameTest {
 
     @Test
     public void testRoll_withMoreThanTenPins() throws Exception {
-        var frame = new Frame();
-        frame.roll(10);
-        assertThrows(IllegalRollException.class, () -> frame.roll(1));
+        
+        frame.roll(7);
+        assertThrows(IllegalRollException.class, () -> frame.roll(7));
     }
 
     @Test
     public void testRoll_withSpare() throws Exception  {
-        var frame = new Frame();
-        var nextFrame = new Frame();
+        
+        var nextFrame = new IntermediateFrame();
         frame.setNext(nextFrame);
         frame.roll(3);
         frame.roll(7);
@@ -55,8 +64,8 @@ public class FrameTest {
 
     @Test
     public void testRoll_withStrike() throws Exception  {
-        var frame = new Frame();
-        var nextFrame = new Frame();
+        
+        var nextFrame = new IntermediateFrame();
         frame.setNext(nextFrame);
         frame.roll(10);
         nextFrame.roll(2);
@@ -66,8 +75,8 @@ public class FrameTest {
 
     @Test
     public void testRoll_withAndWithoutNextFrame() throws Exception  {
-        var frame = new Frame();
-        var nextFrame = new Frame();
+        
+        var nextFrame = new IntermediateFrame();
         frame.setNext(nextFrame);
         frame.roll(10);
         assertEquals(10, frame.score());
