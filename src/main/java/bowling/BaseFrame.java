@@ -17,11 +17,13 @@ public abstract class BaseFrame implements Frame {
         }
     }
 
-    final int getFirstRoll() {
+    @Override
+    public final int getFirstRoll() {
         return firstRoll;
     }
 
-    final int getSecondRoll() {
+    @Override
+    public final int getSecondRoll() {
         return secondRoll;
     }
 

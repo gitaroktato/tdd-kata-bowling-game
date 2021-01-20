@@ -2,6 +2,7 @@ package bowling;
 
 public class TenthFrame extends BaseFrame {
 
+    public static final int MAXIMUM_TRIES = 3;
     private int tries = 0;
     private int thirdRoll;
 
@@ -10,10 +11,8 @@ public class TenthFrame extends BaseFrame {
         verifyNumberOfPinsIsLessThanMaximum(pins);
         if (!isThirdRollAllowed()) {
             verifyNumberOfPinsIsLessThanMaximum(getFirstRoll() + pins);
-            verifyNumberOfTriesIsLessThanMaximum(tries,2);
-        } else {
-            verifyNumberOfTriesIsLessThanMaximum(tries,3);
         }
+        verifyNumberOfTriesIsLessThanMaximum(tries, getMaximumTries());
 
         if (tries == 0) {
             setFirstRoll(pins);
@@ -41,4 +40,26 @@ public class TenthFrame extends BaseFrame {
         return frameScore;
     }
 
+    @Override
+    public void setNext(Frame frame) {
+        throw new UnsupportedOperationException("Tenth frame has no next frame");
+    }
+
+    private int getMaximumTries() {
+        if (isThirdRollAllowed()) {
+            return MAXIMUM_TRIES;
+        } else {
+            return MAXIMUM_TRIES - 1;
+        }
+    }
+
+    @Override
+    public boolean noMoreRolls() {
+        return tries == getMaximumTries();
+    }
+
+    @Override
+    public int getSecondRollForBonus() {
+        return getSecondRoll();
+    }
 }
