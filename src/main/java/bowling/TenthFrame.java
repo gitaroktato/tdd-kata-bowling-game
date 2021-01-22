@@ -2,64 +2,27 @@ package bowling;
 
 public class TenthFrame extends BaseFrame {
 
-    private static final int MAXIMUM_TRIES = 3;
-    private int tries = 0;
-    private int thirdRoll;
-
     @Override
-    public void roll(int pins) throws NoMoreRollsException, IllegalRollException {
-        verifyNumberOfPinsIsLessThanMaximum(pins);
-        if (!isThirdRollAllowed()) {
-            verifyNumberOfPinsIsLessThanMaximum(getFirstRoll() + pins);
-        }
-        verifyNumberOfTriesIsLessThanMaximum(tries, getMaximumTries());
-
-        if (tries == 0) {
-            setFirstRoll(pins);
-        } else if (tries == 1) {
-            setSecondRoll(pins);
-        } else if (tries == 2) {
-            thirdRoll = pins;
-        }
-        tries++;
-    }
-
-    private boolean isThirdRollAllowed() {
-        return isSpare() || isStrike();
+    public void roll(int pins) {
     }
 
     @Override
     public int score() {
-        var frameScore = getFirstRoll() + getSecondRoll();
-        if (isStrike()) {
-            return frameScore + thirdRoll;
-        }
-        if (isSpare()) {
-            return frameScore + thirdRoll;
-        }
-        return frameScore;
+        return 0;
     }
 
     @Override
     public void setNext(Frame frame) {
-        throw new UnsupportedOperationException("Tenth frame has no next frame");
-    }
-
-    private int getMaximumTries() {
-        if (isThirdRollAllowed()) {
-            return MAXIMUM_TRIES;
-        } else {
-            return MAXIMUM_TRIES - 1;
-        }
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public boolean noMoreRolls() {
-        return tries == getMaximumTries();
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public int getSecondRollForBonus() {
-        return getSecondRoll();
+        throw new UnsupportedOperationException();
     }
 }

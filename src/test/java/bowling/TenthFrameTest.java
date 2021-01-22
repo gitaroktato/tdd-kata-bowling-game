@@ -1,6 +1,7 @@
 package bowling;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -15,6 +16,7 @@ public class TenthFrameTest {
     }
 
     @Test
+    @Disabled
     public void testRoll_withTwoTrials() throws Exception {
         frame.roll(3);
         frame.roll(7);
@@ -23,6 +25,7 @@ public class TenthFrameTest {
     }
 
     @Test
+    @Disabled
     public void testRoll_withMoreTrials() throws Exception {
         frame.roll(0);
         frame.roll(0);
@@ -31,6 +34,7 @@ public class TenthFrameTest {
     }
 
     @Test
+    @Disabled
     public void testRoll_withMoreTrialsAfterSpare() throws Exception {
         frame.roll(3);
         frame.roll(7);
@@ -38,7 +42,9 @@ public class TenthFrameTest {
         assertThrows(NoMoreRollsException.class,
                 () -> frame.roll(2));
     }
+
     @Test
+    @Disabled
     public void testRoll_withMoreTrialsAfterStrike() throws Exception {
         frame.roll(10);
         frame.roll(7);
@@ -48,6 +54,7 @@ public class TenthFrameTest {
     }
 
     @Test
+    @Disabled
     public void testRoll_withTenPins() throws Exception {
         frame.roll(10);
         frame.roll(0);
@@ -55,12 +62,14 @@ public class TenthFrameTest {
     }
 
     @Test
+    @Disabled
     public void testRoll_withMoreThanTenPins() throws Exception {
         frame.roll(9);
         assertThrows(IllegalRollException.class, () -> frame.roll(2));
     }
 
     @Test
+    @Disabled
     public void testRoll_withSpare() throws Exception  {
         frame.roll(3);
         frame.roll(7);
@@ -69,6 +78,7 @@ public class TenthFrameTest {
     }
 
     @Test
+    @Disabled
     public void testRoll_withFourTries() throws Exception  {
         frame.roll(3);
         frame.roll(7);
@@ -77,6 +87,7 @@ public class TenthFrameTest {
     }
 
     @Test
+    @Disabled
     public void testRoll_withStrike() throws Exception  {
         frame.roll(10);
         frame.roll(2);
@@ -84,12 +95,14 @@ public class TenthFrameTest {
     }
 
     @Test
+    @Disabled
     public void testRoll_withStrikeAndMoreThanTenPinsOnSecondRoll() throws Exception  {
         frame.roll(10);
         assertThrows(IllegalRollException.class, () -> frame.roll(12));
     }
 
     @Test
+    @Disabled
     public void testRoll_withThreeStrikes() throws Exception  {
         frame.roll(10);
         frame.roll(10);
@@ -98,11 +111,13 @@ public class TenthFrameTest {
     }
 
     @Test
+    @Disabled
     public void testNoMoreRolls_withoutAny() throws Exception {
         assertFalse(frame.noMoreRolls());
     }
 
     @Test
+    @Disabled
     public void testNoMoreRolls_withoutStrikeOrSpare() throws Exception {
         frame.roll(3);
         frame.roll(4);
@@ -110,6 +125,7 @@ public class TenthFrameTest {
     }
 
     @Test
+    @Disabled
     public void testNoMoreRolls_withSpare() throws Exception {
         frame.roll(3);
         frame.roll(7);
@@ -120,6 +136,7 @@ public class TenthFrameTest {
     }
 
     @Test
+    @Disabled
     public void testNoMoreRolls_withStrike() throws Exception {
         frame.roll(10);
         assertFalse(frame.noMoreRolls());
