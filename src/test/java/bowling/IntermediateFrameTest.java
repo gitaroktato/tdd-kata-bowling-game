@@ -91,29 +91,31 @@ public class IntermediateFrameTest {
 
     @Test
     @Disabled
-    public void testHasMoreRolls_withoutAny() throws Exception {
+    public void testNoMoreRolls_withoutAny() throws Exception {
         assertFalse(frame.noMoreRolls());
     }
 
     @Test
     @Disabled
-    public void testHasMoreRolls_withoutStrikeOrSpare() throws Exception {
+    public void testNoMoreRolls_withoutStrikeOrSpare() throws Exception {
         frame.roll(3);
+        assertFalse(frame.noMoreRolls());
         frame.roll(4);
         assertTrue(frame.noMoreRolls());
     }
 
     @Test
     @Disabled
-    public void testHasMoreRolls_withSpare() throws Exception {
+    public void testNoMoreRolls_withSpare() throws Exception {
         frame.roll(3);
+        assertFalse(frame.noMoreRolls());
         frame.roll(7);
         assertTrue(frame.noMoreRolls());
     }
 
     @Test
     @Disabled
-    public void testHasMoreRolls_withStrike() throws Exception {
+    public void testNoMoreRolls_withStrike() throws Exception {
         frame.roll(10);
         assertTrue(frame.noMoreRolls());
     }

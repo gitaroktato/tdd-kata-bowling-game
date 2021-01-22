@@ -120,6 +120,7 @@ public class TenthFrameTest {
     @Disabled
     public void testNoMoreRolls_withoutStrikeOrSpare() throws Exception {
         frame.roll(3);
+        assertFalse(frame.noMoreRolls());
         frame.roll(4);
         assertTrue(frame.noMoreRolls());
     }
@@ -128,6 +129,7 @@ public class TenthFrameTest {
     @Disabled
     public void testNoMoreRolls_withSpare() throws Exception {
         frame.roll(3);
+        assertFalse(frame.noMoreRolls());
         frame.roll(7);
         assertFalse(frame.noMoreRolls());
 
