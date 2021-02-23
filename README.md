@@ -5,6 +5,9 @@
 Original description of the exercise:
 [https://kata-log.rocks/bowling-game-kata]
 
+**Video recording of a live TDD session**
+https://www.youtube.com/watch?v=l8VLgCUWlIE
+
 ## Story Outline
 ### Bowling Rules
 #### The Game
