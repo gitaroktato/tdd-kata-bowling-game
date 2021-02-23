@@ -4,6 +4,9 @@ Original description of the exercise:
 [https://kata-log.rocks/bowling-game-kata]
 
 ## Story Outline
+### Bowling Rules - Hungarian
+https://www.funcitybowling.hu/bowling-szabalyok/
+
 ### Bowling Rules
 #### The Game
 The game consists of 10 frames. 
