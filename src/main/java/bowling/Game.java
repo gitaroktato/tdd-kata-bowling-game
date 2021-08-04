@@ -11,26 +11,27 @@ public class Game {
     List<Frame> frames = new ArrayList<>(TOTAL_NUMBER_OF_FRAMES);
 
     public Game() {
-        IntermediateFrame current = new IntermediateFrame();
-        frames.add(current);
-        for (int i = 2; i <= FINAL_FRAME_INDEX; i++) {
-            var next = new IntermediateFrame();
-            current.setNext(next);
-            current = next;
-            frames.add(next);
-        }
-        var next = new FinalFrame();
-        current.setNext(next);
-        frames.add(next);
-        currentFrame = 0;
+        frames.add(new IntermediateFrame());
     }
 
     public void roll(int pins) throws IllegalRollException, NoMoreRollsException {
         frames.get(currentFrame).roll(pins);
         if (!frames.get(currentFrame).hasMoreRolls()
                 && canProceedWithNextFrame()) {
+            addNextFrame();
             currentFrame++;
         }
+    }
+
+    private void addNextFrame() {
+        Frame next;
+        if (currentFrame == FINAL_FRAME_INDEX - 1) {
+            next = new FinalFrame();
+        } else {
+            next = new IntermediateFrame();
+        }
+        frames.get(currentFrame).setNext(next);
+        frames.add(next);
     }
 
     private boolean canProceedWithNextFrame() {

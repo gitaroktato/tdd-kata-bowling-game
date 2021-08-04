@@ -45,8 +45,8 @@ public class FinalFrame extends BaseFrame implements Frame  {
     }
 
     @Override
-    public boolean hasNext() {
-        return false;
+    public void setNext(Frame frame) {
+        throw new UnsupportedOperationException("FinalFrame can't have next frame");
     }
 
     @Override
