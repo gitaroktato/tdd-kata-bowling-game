@@ -103,7 +103,11 @@ How should we represent **frame** in our code? We simply should make it explicit
 - Helps readabiltiy by explicitly phrasing another "noun" of our doman, called **frame**.
 - But most importantly **it's decomposing the problem to smaller subproblems that's easier to solve!**
 
-So let's have a simple diagram to see how our class hierarchy should look like.
+Here's a diagram, that shows how our class hierarchy should look like.
+
+...
+
+
 
 
 
@@ -112,3 +116,4 @@ So let's have a simple diagram to see how our class hierarchy should look like.
 // TODO making implicit concepts explicit.
 // TODO language flaws of the technique, especially inheritance.
 // TODO Microservices with shallow domain. Very simple domain.
+If you're interested, you can watch me [on YouTube](https://www.youtube.com/watch?v=gxxKPhuw4e8) doing the bowling game implementation step-by-step using TDD. 
