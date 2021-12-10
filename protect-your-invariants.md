@@ -33,21 +33,82 @@ Sadly this is especially true if we want to implement some sort of an _invariant
 
 Should we put these invariants into our application boundaries in some sort of a validation logic? Maybe we could use another [framework or library](https://beanvalidation.org/2.0/) for our aid? I say we should put these implementations very close to our domain instead. Capture them with simple language elments that can be verified with a simple unit test.
 
+![invariants_versus_validation](docs/invariants_vs_validation.png)
+_Invariants VS. validation: Often validation is placed on layer boundaries, while invariants are placed at the heart of your software_
+
 ## Defensive Programming, Design By Contract
-To be honest, when I read about "Design by Contract" in the book ["The Pragmatic Programmer"](https://www.goodreads.com/book/show/4099.The_Pragmatic_Programmer), I got great fan of the subject. Unfortunately, I didn't find good support for it in Java so I just stopped experimenting with it. Later on I just dropped the burden of finding a good library for any kind of work and started implemneting invariants and preconditions with simple language elements. Sometimes I formulated these as assertions, sometimes I just used some simplistic functions, but it always kept this kind of code close to the target domain. 
+To be honest, when I read about "Design by Contract" in the book ["The Pragmatic Programmer"](https://www.goodreads.com/book/show/4099.The_Pragmatic_Programmer), I got great fan of the subject. Unfortunately, I didn't find good support for it in Java so I just stopped experimenting with it. Later on I just dropped the burden of finding a good library for any kind of work and started implementing invariants and preconditions with simple language elements. Sometimes I formulated these as assertions, sometimes I just used some simplistic functions, but it always kept this kind of code close to the target domain. 
 
 Later, I got familiar with Domain-Driven Design by reading Eric Evans' book. Inside he talked about "Making Implicit Concepts Explicit".That was the point, when I realized that invariants realted to the domain **should** be kept with the target domain and **should** be treated separately from handling possible programmer errors or misformatted input. For instance, a date format is something from the latter while handling important use-cases, like what happens if duplicated line items are put into a shopping cart, are the former.
 
 // TODO DDD book assertions
-// TODO DBC libraries now
 
 ## Two Examples (Bowling Game and Knight Solver)
+
+OK, now let's look at two practical examples. In the [first one](https://kata-log.rocks/bowling-game-kata) we will implement a score evaluation software for a bowling game. The scoring rules can be explained in a few sentences, so I will just copy them over to here:
+
+### Bowling Rules
+#### The Game
+_The game consists of 10 frames. In each frame the player has two rolls to knock down 10 pins._
+_The score for the frame is the total number of pins knocked down, plus bonuses for strikes and spares._
+
+#### Spares
+_A spare is when the player knocks down all 10 pins in two rolls._ 
+_The bonus for that frame is the number of pins knocked down by the next roll._
+
+#### Strikes
+_A strike is when the player knocks down all 10 pins on his first roll._ 
+_The frame is then completed with a single roll. The bonus for that frame is the value of the next two rolls._
+
+#### Tenth frame
+_In the tenth frame a player who rolls a spare or strike is allowed to roll the extra balls to complete the frame._
+_However, no more than three balls can be rolled in the tenth frame._
+
+For those with poor imagination, here's a bowling scorecard. Spares are shown with black triangles and strikes with rectangles.
+![scorecard](docs/bowling_game_sample.png)
+
+The rules seem simplistic, so we can start with something like an int array counting the number of scores. We can factor in the rest of the mentioned rules later (at least we think we can do it relatively easily). 
+
+```java
+public class Game {
+
+    private int[] rolls = new int[21];
+    private int turn = 0;
+
+    public void roll(int pins) {
+        rolls[turn++] = pins;
+    }
+
+    public int score() {
+        return Arrays.stream(rolls).sum();
+    }
+
+}
+```
+
+Now let's collect the preconditions and invariants for the `roll()` method. 
+
+- We can't roll more than 10 **pins** at once (physically impossible as there are only 10 pins at maximum on the field)
+- Sum of **rolls** can be only 10 in each **frame**
+
+There's a implicit concept which is not mentioned in the code above and it makes the implementation extremely hard to handle, and that's the **frame**. Now let's see preconditions and invariants related to **frames** in our business logic:
+
+- A **game** consists 10 **frames**. (this is captured implicitly with the [magic number](https://refactoring.guru/replace-magic-number-with-symbolic-constant) 21).
+- On the tenth **frame** we can have either 2 or 3 **rolls** depending our current score in that **frame**.
+
+How should we represent **frame** in our code? We simply should make it explicit! This has the following positive effect in our implementation:
+
+- Eliminates the hidden SRP violation starting to appear, as we try to do everything in a single `Game` class.
+- Immediately eliminates the magic number `21` in our code.
+- Helps readabiltiy by explicitly phrasing another "noun" of our doman, called **frame**.
+- But most importantly **it's decomposing the problem to smaller subproblems that's easier to solve!**
+
+So let's have a simple diagram to see how our class hierarchy should look like.
 
 
 
 ## Conclusion
 
-... // TODO making implicit concepts explicit.
+// TODO making implicit concepts explicit.
 // TODO language flaws of the technique, especially inheritance.
-
-.. Microservices with shallow domain. Very simple domain.
+// TODO Microservices with shallow domain. Very simple domain.
