@@ -104,8 +104,7 @@ How should we represent **frame** in our code? We simply should make it explicit
 - But most importantly **it's decomposing the problem to smaller subproblems that's easier to solve!**
 
 Here's a diagram, that shows how our class hierarchy should look like.
-
-...
+![class-diagram](docs/class_diagram_openboard.png)
 
 
 
