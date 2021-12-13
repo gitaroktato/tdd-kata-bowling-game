@@ -17,7 +17,6 @@ public class IntermediateFrameTest {
 
 
     @Test
-    @Disabled
     public void testRoll_withTwoTrials() throws Exception {
         
         frame.roll(3);
@@ -27,7 +26,6 @@ public class IntermediateFrameTest {
     }
 
     @Test
-    @Disabled
     public void testRoll_withMoreTrials() throws Exception {
         
         frame.roll(0);
@@ -37,7 +35,6 @@ public class IntermediateFrameTest {
     }
 
     @Test
-    @Disabled
     public void testRoll_withTenPins() throws Exception {
         
         frame.roll(10);
@@ -48,7 +45,6 @@ public class IntermediateFrameTest {
 
 
     @Test
-    @Disabled
     public void testRoll_withMoreThanTenPins() throws Exception {
         
         frame.roll(7);
@@ -56,7 +52,6 @@ public class IntermediateFrameTest {
     }
 
     @Test
-    @Disabled
     public void testRoll_withSpare() throws Exception  {
         
         var nextFrame = new IntermediateFrame();
@@ -68,7 +63,6 @@ public class IntermediateFrameTest {
     }
 
     @Test
-    @Disabled
     public void testRoll_withStrike() throws Exception  {
         
         var nextFrame = new IntermediateFrame();
@@ -80,7 +74,6 @@ public class IntermediateFrameTest {
     }
 
     @Test
-    @Disabled
     public void testRoll_withAndWithoutNextFrame() throws Exception  {
         
         var nextFrame = new IntermediateFrame();
@@ -90,13 +83,11 @@ public class IntermediateFrameTest {
     }
 
     @Test
-    @Disabled
     public void testNoMoreRolls_withoutAny() throws Exception {
         assertFalse(frame.noMoreRolls());
     }
 
     @Test
-    @Disabled
     public void testNoMoreRolls_withoutStrikeOrSpare() throws Exception {
         frame.roll(3);
         assertFalse(frame.noMoreRolls());
@@ -105,7 +96,6 @@ public class IntermediateFrameTest {
     }
 
     @Test
-    @Disabled
     public void testNoMoreRolls_withSpare() throws Exception {
         frame.roll(3);
         assertFalse(frame.noMoreRolls());
@@ -114,7 +104,6 @@ public class IntermediateFrameTest {
     }
 
     @Test
-    @Disabled
     public void testNoMoreRolls_withStrike() throws Exception {
         frame.roll(10);
         assertTrue(frame.noMoreRolls());

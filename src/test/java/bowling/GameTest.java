@@ -1,6 +1,5 @@
 package bowling;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.stream.IntStream;
@@ -11,7 +10,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class GameTest {
 
     @Test
-    @Disabled
     public void test_withOnlyOneRollWhichDoesNotHit() throws IllegalRollException, NoMoreRollsException {
         var game = new Game();
         game.roll(0);
@@ -20,7 +18,6 @@ public class GameTest {
     }
 
     @Test
-    @Disabled
     public void test_withOnlyOnePinHit() throws IllegalRollException, NoMoreRollsException {
         var game = new Game();
         game.roll(1);
@@ -30,7 +27,6 @@ public class GameTest {
 
 
     @Test
-    @Disabled
     public void test_withFullGame() {
         var game = new Game();
         IntStream.range(0, 20).forEach(
@@ -48,7 +44,6 @@ public class GameTest {
     }
 
     @Test
-    @Disabled
     public void test_withMorePinsThanPossibleInFirstFrame() throws Exception {
         var game = new Game();
         game.roll(7);
@@ -56,7 +51,6 @@ public class GameTest {
     }
 
     @Test
-    @Disabled
     public void test_withSpare() throws Exception {
         var game = new Game();
         game.roll(9);
@@ -67,7 +61,6 @@ public class GameTest {
     }
 
     @Test
-    @Disabled
     public void test_withAllStrikes() throws Exception {
         var game = new Game();
         game.roll(10); // strike : 30
@@ -77,7 +70,6 @@ public class GameTest {
     }
 
     @Test
-    @Disabled
     public void test_withPerfectGame() {
         var game = new Game();
         IntStream.rangeClosed(1, 12).forEach(i -> {
@@ -87,7 +79,6 @@ public class GameTest {
     }
 
     @Test
-    @Disabled
     public void test_withRealGameFromExample() throws Exception {
         var game = new Game();
         game.roll(1); // frame1
