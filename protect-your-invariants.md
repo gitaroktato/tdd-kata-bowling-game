@@ -41,13 +41,11 @@ To be honest, when I read about "Design by Contract" in the book ["The Pragmatic
 
 Later, I got familiar with Domain-Driven Design by reading Eric Evans' book. Inside he talked about "Making Implicit Concepts Explicit".That was the point, when I realized that invariants realted to the domain **should** be kept with the target domain and **should** be treated separately from handling possible programmer errors or misformatted input. For instance, a date format is something from the latter while handling important use-cases, like what happens if duplicated line items are put into a shopping cart, are the former.
 
-// TODO DDD book assertions
-
-## Two Examples (Bowling Game and Knight Solver)
+## Two Examples (Bowling Game and Knight in a Chessboard)
 
 OK, now let's look at two practical examples. In the [first one](https://kata-log.rocks/bowling-game-kata) we will implement a score evaluation software for a bowling game. The scoring rules can be explained in a few sentences, so I will just copy them over to here:
 
-### Bowling Rules
+### Bowling Game Rules
 #### The Game
 _The game consists of 10 frames. In each frame the player has two rolls to knock down 10 pins._
 _The score for the frame is the total number of pins knocked down, plus bonuses for strikes and spares._
@@ -89,12 +87,17 @@ public class Game {
 Now let's collect the preconditions and invariants for the `roll()` method. 
 
 - We can't roll more than 10 **pins** at once (physically impossible as there are only 10 pins at maximum on the field)
-- Sum of **rolls** can be only 10 in each **frame**
+- Sum of **pins** we hit can be only 10 in each **frame**
 
 There's a implicit concept which is not mentioned in the code above and it makes the implementation extremely hard to handle, and that's the **frame**. Now let's see preconditions and invariants related to **frames** in our business logic:
 
-- A **game** consists 10 **frames**. (this is captured implicitly with the [magic number](https://refactoring.guru/replace-magic-number-with-symbolic-constant) 21).
 - On the tenth **frame** we can have either 2 or 3 **rolls** depending our current score in that **frame**.
+- In first nine **frame** we can have 2 **rolls** at maximum.
+- All of the above mentioned for the `roll()` method is also true, since we actually capture our current score in each frame in our scorecard.
+
+Game should just ensure one thing:
+
+- A **game** consists 10 **frames**. (this is captured implicitly with the [magic number](https://refactoring.guru/replace-magic-number-with-symbolic-constant) 21).
 
 How should we represent **frame** in our code? We simply should make it explicit! This has the following positive effect in our implementation:
 
@@ -106,13 +109,191 @@ How should we represent **frame** in our code? We simply should make it explicit
 Here's a diagram, that shows how our class hierarchy should look like.
 ![class-diagram](docs/class_diagram_openboard.png)
 
+So, how do we implement the `Game` class that encapsulates all its invariants? 
+
+```java
+public class Game {
+
+    private Frame[] frames = new Frame[10];
+    private int turn = 0;
+
+    public Game() {
+        // ...
+    }
+
+    public void roll(int pins) throws NoMoreRollsException, IllegalRollException {
+        frames[turn].roll(pins);
+        if (frames[turn].noMoreRolls()) {
+            turn++;
+        }
+    }
+
+    public int score() {
+        return Arrays.stream(frames).mapToInt(Frame::score).sum();
+    }
+
+}
+```
+
+The line .. above is a pure representation of our first requirement: _"The game consists of 10 frames."_ Game does not need to know much more from anything else. The `roll()` and `score()` methods are just delegating functionalities to the appropriate `Frame` subclass.
+
+Let's see how `roll()` method in the `Frame` implementation is dealing with preconditions and invariants:
+
+```java
+public class IntermediateFrame extends BaseFrame {
+
+    private static final int FIRST_TRY = 0;
+    private static final int MAXIMUM_TRIES = 2;
+    // ...
+    @Override
+    public void roll(int pins) throws NoMoreRollsException, IllegalRollException {
+        verifyNumberOfTriesIsLessThanMaximum(tries, MAXIMUM_TRIES);
+        verifyNumberOfPinsIsLessThanMaximum(getFirstRoll() + pins);
+        if (tries == FIRST_TRY) {
+            setFirstRoll(pins);
+        } else {
+            setSecondRoll(pins);
+        }
+        tries++;
+    } 
+    // ...
+}
+```
+
+Just to recap, we have to ensure, that:
+
+- We can't roll more than 10 **pins** at once (physically impossible as there are only 10 pins at maximum on the field)
+- Sum of **pins** we hit can be only 10 in each **frame**.
+- In the first nine **frame** we can have 2 **rolls** at maximum.
+
+All of the above is encapsulated in just two lines.
+
+### Knight on a Chessboard
+
+I once saw the following [hard interviewing assignment](https://afteracademy.com/blog/knight-on-chessboard). If you get an excercise like that and you are inexperienced, you will probably block because of the overwhelming complexity of the problem. (Then you probably start right in the middle and end up troubleshooting all your bugs in an overcomplicated multi-nested for loop in the last 20 minutes of the interview.) 
+
+Object-Oriented thinking should be on our aid! Only thing that we have to do is to split the problem into feasible subproblems and  protect our invariants (you can imagine it as some sort of a synonym to encapsulation). This ensures good OOP design from the bottom-up and save a lot of time.
+
+#### Working With What We Know
+
+Let's brainstorm together a couple of invariants:
+
+* A chess piece should remain on the board after each step.
+* A knight is allowed to move two squares vertically and one square horizontally, or two squares horizontally and one square vertically (from Wikipedia).
+
+These are still too high-level and not simplistic enough to work with. How should we express the first one with multiple invariants?
+
+* A position in the chessboard is formed of ranks and files.
+* A chess piece on the board occupies one single position.
 
 
+```java
+public final class Position {
 
+    private final Rank rank;
+    private final File file;
+
+    public Position(Rank rank, File file) {
+        this.rank = rank;
+        this.file = file;
+    }
+    // ...
+}
+```
+
+```java
+public final class Knight {
+
+    private final Position currentPosition;
+    
+    public Knight(Position position) {
+        this.position = position;
+    }
+
+}
+```
+
+Now, for the sake of simplicity let's assume that we're playing with a standard 8x8 chessboard. Each rank and file can be represented with enums in this case: 
+
+```java
+public enum Rank {
+    A, B, C, D, E, F, G, H;
+    // ...
+}
+
+public enum File {
+    ONE, TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT;
+    // ...
+}
+```
+
+To guarantee the first invariant all that we have to do is to implement a method which will move our piece to a new location:
+```java
+class Position {
+    // ...
+    public Position advance(int rankChange, int fileChange) throws IllegalMoveException {
+        return new Position(getRank().advance(rankChange),
+                getFile().advance(fileChange));
+    }
+    // ...
+}
+
+class Rank {
+    // ..
+    public Rank advance(int steps) throws IllegalMoveException {
+        try {
+            return Rank.values()[this.ordinal() + steps];
+        } catch (ArrayIndexOutOfBoundsException ex) {
+            throw new IllegalMoveException();
+        }
+    }
+}
+```
+
+All that's happening is we're changing the existing interface of the Java enum to align it with our domain. We have introduced the `advance` and the `IllegalMoveException` terms to our design. 
+
+
+#### Why Aren't We Using Coordinates?
+
+As a sidenote let's discuss less powerful designs. At least less powerful from the scope of forcing our invariants.
+What if we use just two ints inside our `Knight` class?
+
+```java
+public class Knight {
+
+    private final int file;
+    private final int rank;
+
+    public Knight(int file, int rank) {
+        this.file = file;
+        this.rank = rank;
+    }
+    // ...
+}
+```
+
+In this case we need to check if the `file` and `rank` fields are between 1 and 8 (or 0 - 7) after moving our piece. This logic can't be placed inside the `Knight` class, because it's going to break the "Single Responisbility Principle": What if we need to extend our codebase with additional pieces? The invariant has to be enforced in each and every step for each and every piece. We can't just copy over the validaiton code to other pieces and neither can we extend `int` functionalities. So there has to be a new class encapsulating this logic, that's associated with all the chess pieces somehow. Let's put the coordinates into the `Position` class:
+
+```java
+public class Position {
+    private final int file;
+    private final int rank;
+
+    public Position(int file, int rank) {
+        this.file = file;
+        this.rank = rank;
+    }
+    // ...
+}
+```
+
+Is this acceptable? Not really. Please think about it a little bit before reading forward... With constructors using the same type as parameters it's easy to introduce a bug by just mixing up the two arguments. `Position(1,3)` and `Position(3,1)` is not the same. These defects are particularly hard to spot in a complex codebase, so we should avoid doubling parameters with the same type in any method. 
+
+#### Coding the Algorithm
 
 ## Conclusion
 
-// TODO making implicit concepts explicit.
-// TODO language flaws of the technique, especially inheritance.
+// TODO DDD book assertions, validation, constrains and policies
+// TODO language flaws of the technique, especially inheritance. Template method, make methods with guard clauses final!
 // TODO Microservices with shallow domain. Very simple domain.
 If you're interested, you can watch me [on YouTube](https://www.youtube.com/watch?v=gxxKPhuw4e8) doing the bowling game implementation step-by-step using TDD. 
