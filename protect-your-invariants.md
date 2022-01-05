@@ -179,7 +179,7 @@ Object-Oriented thinking should be on our aid! Only thing that we have to do is 
 Let's brainstorm together a couple of invariants:
 
 * A chess piece should remain on the board after each step.
-* A knight is allowed to move two squares vertically and one square horizontally, or two squares horizontally and one square vertically (from Wikipedia).
+* A knight is allowed to move two squares vertically and one square horizontally, or two squares horizontally and one square vertically (from [Wikipedia](https://en.wikipedia.org/wiki/Knight_%28chess%29#Movement)).
 
 These are still too high-level and not simplistic enough to work with. How should we express the first one with multiple invariants?
 
@@ -287,9 +287,126 @@ public class Position {
 }
 ```
 
-Is this acceptable? Not really. Please think about it a little bit before reading forward... With constructors using the same type as parameters it's easy to introduce a bug by just mixing up the two arguments. `Position(1,3)` and `Position(3,1)` is not the same. These defects are particularly hard to spot in a complex codebase, so we should avoid doubling parameters with the same type in any method. 
+This style is a bit better. We have to guarantee that each `Position` object is well constructed, meaning both `file` and `rank` values are in range. We could do something like the example below, but this would mean that every constructor call will possibly throw an exception:
+
+```java
+public class Position {
+    // ...
+    public Position(int rank, int file) throws IllegalMoveException {
+        assertWithingRange(rank);
+        assertWithingRange(file);
+        this.rank = rank;
+        this.file = file;
+    }
+    // ...
+
+```
+
+Enums offer a possible range of values that can be predefined with a declarative style. This relieves us of the burden of exception handling in every object creation.
 
 #### Coding the Algorithm
+
+A `Knight` should tell the set of positions it is allowed to visit. We need to implement this method relying on the existing mechanism. Something like the snippet below should work:
+
+```java
+public class Knight {
+    // ...
+    Set<Position> getPossibleMoves() {
+        var result = new HashSet<Position>();
+        addPositionIfPossible(result, 1, 2);
+        addPositionIfPossible(result, 1, -2);
+        addPositionIfPossible(result, 2, 1);
+        addPositionIfPossible(result, 2, -1);
+        addPositionIfPossible(result, -1, 2);
+        addPositionIfPossible(result, -1, -2);
+        addPositionIfPossible(result, -2, 1);
+        addPositionIfPossible(result, -2, -1);
+        return result;
+    }
+
+    private void addPositionIfPossible(HashSet<Position> result, int rankChange, int fileChange) {
+        try {
+            result.add(position.advance(rankChange, fileChange));
+        } catch (IllegalMoveException e) {
+        }
+    }
+    // ...
+}
+```
+
+The method `addPositionIfPossible` is not quite nice, because it swallows an exception and modifies the passed parameter's state. If you prefer to eliminate these issues in method implementation you can refactor the snippet above after changing `Position.advance()`  to return an `Optional<Position>`.
+
+```java
+public class Knight {
+    // ...
+    Set<Position> getPossibleMoves() {
+        var result = new HashSet<Position>();
+        position.advance(1, 2).ifPresent(result::add);
+        position.advance(1, -2).ifPresent(result::add);
+        position.advance(2, 1).ifPresent(result::add);
+        position.advance(2, -1).ifPresent(result::add);
+        position.advance(-1, 2).ifPresent(result::add);
+        position.advance(-1, -2).ifPresent(result::add);
+        position.advance(-2, 1).ifPresent(result::add);
+        position.advance(-2, -1).ifPresent(result::add);
+        return result;
+    }
+    // ...
+}
+```
+
+OK, now let's head for the implementation of the algorithm after we've solved all the subproblems above. We need some Java collections in place to track our current progress of the traversal. Let's try to nail them and implement them.
+
+* We need to track the positions we've already traversed with our Knight (can be a set).
+* All possible moves should be enqueued, so we can investigate those one-by-one (ideal candidate for a queue).
+* We track the steps required in a separate collection which maps each position on the chessboard with an integer (a map of course).
+
+``` java
+public class KnightSolver {
+    private final Knight knight;
+    private final Set<Position> seen = new HashSet<>();
+    private final Queue<Position> candidates = new LinkedList<>();
+    private final Map<Position, Integer> stepsNeeded = new HashMap<>();
+    // ...
+}
+```
+
+In each iteration we're visiting the first element of the `candidates` queue. Let's list the steps we need to do:
+
+1. Get the possible moves from that position
+2. Remove all the possible moves which we've already seen
+3. Update our `stepsNeeded` collection with the newly discovered possible moves
+4. Update the set of already `seen` positions
+5. Update the traversable `candidates` with the newly discovered possible moves (for the subsequent iterations)
+6. **Of course, return the result if we reached to the end position**
+
+And this is how it should look:
+
+```java
+public class KnightSolver {
+    //...
+    public int maxStepsFor(Position endPosition) {
+        initialize();
+        while (!candidates.isEmpty()) {
+            var currentKnight = new Knight(candidates.poll());
+            var positions = currentKnight.getPossibleMoves();
+            positions.removeAll(seen);
+            for (var position : positions) {
+                stepsNeeded.put(position, stepsNeeded.get(currentKnight.getPosition()) + 1);
+                if (endPosition.equals(position)) {
+                    return stepsNeeded.get(endPosition);
+                }
+                seen.addAll(positions);
+                candidates.add(position);
+            }
+        }
+        throw new RuntimeException("Should not be possible");
+    }
+    //...
+}
+```
+
+You can view the full code example over here: https://github.com/gitaroktato/knight-shortest-path-example
 
 ## Conclusion
 
