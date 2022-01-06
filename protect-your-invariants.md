@@ -406,11 +406,22 @@ public class KnightSolver {
 }
 ```
 
+// TODO inlined procedural code as a contradiction.
+
 You can view the full code example over here: https://github.com/gitaroktato/knight-shortest-path-example
 
 ## Conclusion
 
-// TODO DDD book assertions, validation, constrains and policies
-// TODO language flaws of the technique, especially inheritance. Template method, make methods with guard clauses final!
-// TODO Microservices with shallow domain. Very simple domain.
+Domain-Driven Design has a great amount of elements in its vocabulary to implement the concepts above. These include specification, validation, assertions, and constraints. Just to name a few. I encourage you to look at *Chapter 10: Supple Design* and *How to Model Less Obvious Kinds of Concepts* from the original book titled [Domain-Driven Design](https://www.goodreads.com/book/show/179133.Domain_Driven_Design) if you're interested about finding out more. This also implies of course, that these concepts should be part of your domain layer and not sitting somewhere else, or even worse scattered all over your code.
+
+
+### Flaws and Limitations of This Technique
+Java is doing poorly in providing language support for designing by contract. Clojure for instance offers definition of [pre- and postconditions](https://clojure.org/reference/special_forms#_fn_name_param_condition_map_expr) for their functions. In Java we can somewhat replace precondition of a method by simply implementing guard clauses or assertions inside each method. The problem with this apporach comes when we need to implement inheritance and begin to override methods. Few of the possible options to overcome from this issue are the following:
+
+* Simplify reusability of your preconditions: Extract them into their separate utility methods and make them `final`. Making them static will help these utility methods not to rely on current object's state.
+* Implement a [Ttemplate method](https://refactoring.guru/design-patterns/template-method) design pattern. I encourage you to make all those methods `public final` which are not meant to be overriden by the sublcasses.
+
+### Other Options
+There are some cases where it might seem better not to aim for a robust design. Microservies with very simple logic or with a shallow domain can be one area I can imagine. Would it sound good to have multiple layers and modularity in this case? It might look beneficial to just simplify everything to the ground in favor of reaching production early. But this is a slippery slope. Note, that good design is really hard to factor in later, similarly to automated tests (which inherently comes with testable code) or security.
+
 If you're interested, you can watch me [on YouTube](https://www.youtube.com/watch?v=gxxKPhuw4e8) doing the bowling game implementation step-by-step using TDD. 
